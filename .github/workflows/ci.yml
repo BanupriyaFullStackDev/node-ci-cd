@@ -30,8 +30,16 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build Docker image
-        run: docker build -t banupriya29/node-ci-cd:latest .
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
-      - name: Push Docker image
-        run: docker push banupriya29/node-ci-cd:latest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: banupriya29/node-ci-cd:latest
