@@ -46,3 +46,15 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: banupriya29/node-ci-cd:latest
+
+  deploy:
+    needs: test
+    runs-on: self-hosted
+
+    steps:
+      - name: Check runner
+        run: |
+          echo "CD job is running on the self-hosted runner"
+          hostname
+          docker --version
+          docker info
