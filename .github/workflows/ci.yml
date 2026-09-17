@@ -52,9 +52,8 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Check runner
+      - name: Deploy to Docker Swarm
         run: |
-          echo "CD job is running on the self-hosted runner"
-          hostname
-          docker --version
-          docker info
+          echo "Deploying to Docker Swarm...."
+          docker service update --force --image banupriya29/node-ci-cd:latest node-ci-cd
+          docker service ls
