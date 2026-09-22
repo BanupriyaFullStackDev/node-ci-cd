@@ -66,10 +66,21 @@ jobs:
           docker service update \
             --image banupriya29/node-ci-cd:${{ github.sha }} \
             node-ci-cd
-      - name: Verify Swarm deployment
+            - name: Verify Swarm deployment
         run: |
           docker service ls
           docker service ps node-ci-cd
+
+          REPLICAS=$(docker service ls --filter name=node-ci-cd --format '{{.Replicas}}')
+
+          echo "Current replicas: $REPLICAS"
+
+          if [ "$REPLICAS" != "3/3" ]; then
+            echo "Swarm deployment failed: expected 3/3 replicas"
+            exit 1
+          fi
+
+          echo "Swarm deployment successful: 3/3 replicas are running"
 
       - name: Health Check
         run: |
