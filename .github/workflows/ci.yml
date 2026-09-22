@@ -66,7 +66,7 @@ jobs:
           docker service update \
             --image banupriya29/node-ci-cd:${{ github.sha }} \
             node-ci-cd
-            - name: Verify Swarm deployment
+      - name: Verify Swarm deployment
         run: |
           docker service ls
           docker service ps node-ci-cd
