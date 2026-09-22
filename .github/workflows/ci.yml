@@ -1,3 +1,4 @@
+
 name: Node.js CI  # CI + CD
 
 on:
@@ -60,29 +61,24 @@ jobs:
           hostname
           docker --version
           docker info
+          kubectl version --client
 
-      - name: Deploy to Docker Swarm
+      - name: Deploy to Kubernetes
         run: |
-          docker service update \
-            --image banupriya29/node-ci-cd:${{ github.sha }} \
-            node-ci-cd
-      - name: Verify Swarm deployment
+          kubectl -n node-ci-cd set image deployment/node-ci-cd \
+            node-ci-cd=banupriya29/node-ci-cd:${{ github.sha }}
+
+      - name: Verify Kubernetes rollout
         run: |
-          docker service ls
-          docker service ps node-ci-cd
+          kubectl -n node-ci-cd rollout status deployment/node-ci-cd --timeout=120s
 
-          REPLICAS=$(docker service ls --filter name=node-ci-cd --format '{{.Replicas}}')
-
-          echo "Current replicas: $REPLICAS"
-
-          if [ "$REPLICAS" != "3/3" ]; then
-            echo "Swarm deployment failed: expected 3/3 replicas"
-            exit 1
-          fi
-
-          echo "Swarm deployment successful: 3/3 replicas are running"
+      - name: Verify Kubernetes deployment
+        run: |
+          kubectl -n node-ci-cd get deployment
+          kubectl -n node-ci-cd get pods
+          kubectl -n node-ci-cd get service
 
       - name: Health Check
         run: |
           sleep 10
-          curl --fail http://103.17.193.35:3000
+          curl --fail http://103.17.193.35:30000
