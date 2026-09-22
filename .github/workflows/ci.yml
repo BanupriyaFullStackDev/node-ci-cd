@@ -45,7 +45,9 @@ jobs:
           context: .
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: banupriya29/node-ci-cd:latest
+          tags: |
+            banupriya29/node-ci-cd:${{ github.sha }}
+            banupriya29/node-ci-cd:latest
 
   deploy:
     needs: test
@@ -62,5 +64,5 @@ jobs:
       - name: Deploy to Docker Swarm
         run: |
           docker service update \
-            --image banupriya29/node-ci-cd:latest \
+            --image banupriya29/node-ci-cd:${{ github.sha }} \
             node-ci-cd
