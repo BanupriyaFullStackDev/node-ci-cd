@@ -58,3 +58,9 @@ jobs:
           hostname
           docker --version
           docker info
+
+      - name: Deploy to Docker Swarm
+        run: |
+          docker service update \
+            --image banupriya29/node-ci-cd:latest \
+            node-ci-cd
