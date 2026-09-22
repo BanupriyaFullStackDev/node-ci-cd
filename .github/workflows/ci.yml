@@ -66,3 +66,7 @@ jobs:
           docker service update \
             --image banupriya29/node-ci-cd:${{ github.sha }} \
             node-ci-cd
+      - name: Health Check
+        run: |
+          sleep 10
+          curl --fail http://103.17.193.35:3000
